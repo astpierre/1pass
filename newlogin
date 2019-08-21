@@ -1,0 +1,19 @@
+#!/bin/bash
+
+echo "Creating a new 1Password login for Andrew..."
+read -p 'Username: ' uservar
+
+read -p 'Do you want me to generate a secure password automatically? ' autopass
+
+if [[ $autopass == "Y" || $autopass == "y" ]]; then
+    passvar=`date +%s | sha256sum | base64 | head -c 24`
+else
+    read -sp 'Password: ' passvar
+fi
+
+#op create item Login $payload --title=$title
+
+op get template Login | \
+jq --arg u "$uservar" '.fields[0].value=$u' | \
+jq --arg p "$passvar" '.fields[1].value=$p'
+
