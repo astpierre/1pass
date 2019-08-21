@@ -2,6 +2,7 @@
 
 echo "Creating a new 1Password login for Andrew..."
 read -p 'Username: ' uservar
+read -p 'Title: ' title
 
 read -p 'Do you want me to generate a secure password automatically? ' autopass
 
@@ -13,7 +14,7 @@ fi
 
 #op create item Login $payload --title=$title
 
-op get template Login | \
-jq --arg u "$uservar" '.fields[0].value=$u' | \
-jq --arg p "$passvar" '.fields[1].value=$p'
+payload=`op get template Login | jq --arg u "$uservar" '.fields[0].value=$u' | jq --arg p "$passvar" '.fields[1].value=$p' | op encode`
+
+op create item Login $payload --title=$title
 
